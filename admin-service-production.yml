@@ -1,12 +1,22 @@
+spring:
+  profiles: production
+  application:
+    name: admin-service
+
+
 # Configure the running port number
 server:
   port: 8871
 
-ribbon:
-  eureka:
-    enabled: true
+# Registration center configuration
+eureka:
+  instance:
+      hostname: localhost
+      port: 8761
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
 
-# zull configuration
 zuul:
   routes:
     static:
@@ -19,13 +29,7 @@ zuul:
     exam-service: /exam/**
     admin-service: /admin/**
   add-proxy-headers: true
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 15000
+
 security:
   user:
     password: none
@@ -37,7 +41,6 @@ security:
       preEstablishedRedirectUri: http://localhost:8871/login
       registeredRedirectUri: http://localhost:8871/login
       useCurrentUri: false
-
     resource:
           jwt:
             keyValue: |
@@ -45,13 +48,8 @@ security:
               MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAimUKhvBhsoeSM3HkIOP / Y3RXjvonBlZnLj8oO92TyAKG53lmAoK0wZ5MTZPsfrOz2Z7CeAp6mPhUANX2RUoFwVzG7rJmgWyqGmGFNBmtYL + uVqQ80TzWi5zyzXTxgVMWiCqqw / u4AeE1qhN8chnGwhUBnpgPAPd8v57mIwg0n5JxjdYe7pgHlpvt8ZXTXd1KBxB5K7WjNlCfMf75ZEeBaplxsSfJUwKbnHQKWcY3NnpjkVR8y4jviAbkOHmGMaliM7fcsLzbosBUPDQuNlvYdjPBRfH6MMPeXRW6On3u0Um9wIYmkQS + AEgHCq4UuLOnTTqqxnGkwFYeMAAXmRyMtQIDAQAB
               -----END PUBLIC KEY-----
 
-#logback configuration, development mode log level is INFO
+#logbackConfiguration, the log level of the production environment is WARN or higher
 logging:
+  file: logs/admin-service/admin-service-production.log
   level:
-    root: INFO
-    org:
-      springframework:
-        security: INFO
-    com:
-      tangyi:
-        mapper: INFO 
+    root: WARN 
